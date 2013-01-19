@@ -37,6 +37,11 @@ public class MainActivity extends Activity {
         LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         LocationListener locListener = new MyLocationListener();
         locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, locListener);
+/*        try {
+            URL spreadsheeturl = new URL("http://gmaps-samples.googlecode.com/svn/trunk/spreadsheetsmapwizard/makecustommap.html");
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException(ex);
+        } */
     }
 
     @Override
@@ -79,4 +84,13 @@ public class MainActivity extends Activity {
 
         }
     }
+    
+//    SpreadsheetService sservice = new SpreadsheetService("MySpreadsheetIntegration");
+    
+ //   SpreadsheetFeed feed = sservice.getFeed(spreadsheeturl,SpreadsheetFeed.class);
+ //       List<SpreadsheetEntry> spreadsheets = feed.getEntries();
+
+    
+    
+    
 }
