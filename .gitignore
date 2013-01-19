@@ -1,0 +1,19 @@
+# Compiler Output
+*/bin/*
+!*/bin/*.apk
+*.layout
+
+# Make Files
+*/Output/*
+!*/Output/*.hex
+*.win
+*.lk
+*.mak
+*.stackdump
+*.depend
+
+# Autosave Files
+*.asv
+*.bak
+*.save
+*.cbTemp
