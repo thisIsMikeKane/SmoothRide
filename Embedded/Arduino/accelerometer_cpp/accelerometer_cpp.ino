@@ -3,18 +3,19 @@
 
 #include <math.h>
 
-int sleepPin = 2;
-int stPin = 5;
-int zeroGPin = 3;
-int gselPin = 4;
-int xPin = A0;
-int yPin = A1;
+int stPin = 7;
+int gselPin = 6;
+int zeroGPin = 5;
+int sleepPin = 4;
+int xPin = A4;
+int yPin = A3;
 int zPin = A2;
 
-int ledPin = 9;
+int ledPin = 13;
+int potPin = A1;
 
-int rxPin = 6;
-int txPin = 7;
+int rxPin = 2;
+int txPin = 3;
 SoftwareSerial BTSerial = SoftwareSerial(rxPin,txPin);
 
 void print(float x, float y, float z);
@@ -45,10 +46,20 @@ void setup()
 
 void loop()
 {
+  
+  short int sum1 = 0x6162,
+            sum2 = 0x6364;
+  
   updateAccels();
   if(BTSerial.available()){
-    BTSerial.println("Hey there!");
-    (void)BTSerial.read();
+    byte input = 0;
+    input = BTSerial.read();
+    if(input == 0x64){ //char ASCII 'd'
+      BTSerial.write((char)(sum1 & 0x00FF));
+      BTSerial.write((char)(sum1 >> 8));
+      BTSerial.write((char)(sum2 & 0x00FF));
+      BTSerial.write((char)(sum2 >> 8));
+    }
   }   
   print(x,y,z); //print the data to the console
   
@@ -60,7 +71,7 @@ void loop()
   (sum /= 10)--; //remove gravity
   
   //Serial.println(sum);
-  threshold = map2(analogRead(A3),0,1023,.2,1);
+  threshold = map2(analogRead(potPin),0,1023,.2,1);
   //Serial.println(threshold);
   if(sum >= threshold) //greater than 1g in any direction
     onBump();
