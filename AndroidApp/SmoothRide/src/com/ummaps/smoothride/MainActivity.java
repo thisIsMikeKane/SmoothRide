@@ -1,13 +1,12 @@
 package com.ummaps.smoothride;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
-import java.lang.Math;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -16,6 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
 	private int					mBigBumpThresh;
 	private double 				distTrvld;
 	private double 				tempDistTrvld;
+	private String 				responseText;
 	
 	public MainActivity() {
 		mIsThreadRunning			= false;
@@ -107,7 +109,14 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy); 
         
-        
+        final MainActivity current = this;
+        final Button button = (Button) findViewById(R.id.buttonmap);
+        button.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View v) {
+        		Intent i = new Intent(current, AboutActivity.class);  
+        		startActivityForResult(i, 1);
+        	}
+        });
     }
 
     @Override
@@ -134,6 +143,7 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
     	}
     	
     	UpdateUI();
+    	
     }
     
     @Override
@@ -165,6 +175,7 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
 	{
 		mBluetoothAddress = mArrayListBluetoothAddress.get(pos);
+		
 	}
 
 	public void onNothingSelected(AdapterView<?> parent)
@@ -215,6 +226,7 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
             double lon = loc.getLongitude();
             
             
+            
             // After traveling distance, check to see if map should be updated
             if (reachedChkPt) {
             	latStart = lat;
@@ -252,33 +264,54 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
         public void postData(double lat, double lon, int howlarge) {
             // Create a new HttpClient and Post Header
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://smoothride.crowdmap.com/api?report");
+            HttpPost httppost = new HttpPost("https://smoothride.crowdmap.com/api?report");
             Calendar rightNow = Calendar.getInstance();
 
             try {
                 // Add your data
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                 String blankstring = "";
+//                nameValuePairs.add(new BasicNameValuePair("latitude", blankstring + lat));
+//                nameValuePairs.add(new BasicNameValuePair("longitude", blankstring + lon));
+//                nameValuePairs.add(new BasicNameValuePair("country_name", "United States"));
+//                nameValuePairs.add(new BasicNameValuePair("incident_title","Pothole"));
+//                nameValuePairs.add(new BasicNameValuePair("incident_description",blankstring + howlarge));
+//                nameValuePairs.add(new BasicNameValuePair("incident_date",blankstring + Calendar.DATE + "/" + Calendar.MONTH + "/" + Calendar.YEAR));
+//                nameValuePairs.add(new BasicNameValuePair("incident_hour",blankstring + Calendar.HOUR));
+//                nameValuePairs.add(new BasicNameValuePair("incident_minute",blankstring + Calendar.MINUTE));
+//                nameValuePairs.add(new BasicNameValuePair("incident_ampm",blankstring + Calendar.AM_PM));
+//                nameValuePairs.add(new BasicNameValuePair("incident_category", blankstring + howlarge));
+//                nameValuePairs.add(new BasicNameValuePair("location_name", "Pothole"));
+//                nameValuePairs.add(new BasicNameValuePair("task", "report"));
+//                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                
+                nameValuePairs.add(new BasicNameValuePair("task", "report"));
                 nameValuePairs.add(new BasicNameValuePair("latitude", blankstring + lat));
                 nameValuePairs.add(new BasicNameValuePair("longitude", blankstring + lon));
                 nameValuePairs.add(new BasicNameValuePair("country_name", "United States"));
                 nameValuePairs.add(new BasicNameValuePair("incident_title","Pothole"));
-                nameValuePairs.add(new BasicNameValuePair("incident_description",blankstring + howlarge));
-                nameValuePairs.add(new BasicNameValuePair("incident_date",blankstring + Calendar.DATE + "/" + Calendar.MONTH + "/" + Calendar.YEAR));
-                nameValuePairs.add(new BasicNameValuePair("incident_hour",blankstring + Calendar.HOUR));
-                nameValuePairs.add(new BasicNameValuePair("incident_minute",blankstring + Calendar.MINUTE));
-                nameValuePairs.add(new BasicNameValuePair("incident_ampm",blankstring + Calendar.AM_PM));
-                nameValuePairs.add(new BasicNameValuePair("incident_category", blankstring + howlarge));
-                nameValuePairs.add(new BasicNameValuePair("location_name", "Pothole"));
-                nameValuePairs.add(new BasicNameValuePair("task", "report"));
+                nameValuePairs.add(new BasicNameValuePair("incident_description","From SmoothRide"));
+                nameValuePairs.add(new BasicNameValuePair("incident_date","01/19/2013"));
+                nameValuePairs.add(new BasicNameValuePair("incident_hour", blankstring + Calendar.HOUR));
+                nameValuePairs.add(new BasicNameValuePair("incident_minute", blankstring + Calendar.MINUTE));
+                nameValuePairs.add(new BasicNameValuePair("incident_ampm", "am"));
+                nameValuePairs.add(new BasicNameValuePair("incident_category", blankstring + (howlarge + 1)));
+                nameValuePairs.add(new BasicNameValuePair("location_name", "Philly"));
+                
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 
                 tvTextViewSent.setText(blankstring + httppost);
                 
                 httppost.setHeader("Authorization", "Basic " + Base64.encodeToString("aozgaa@umich.edu:Aichwaigror=".getBytes(), Base64.NO_WRAP));
+                
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
-
+                
+                HttpEntity entity = response.getEntity();
+                responseText = EntityUtils.toString(entity);
+                
+                mHandler.sendEmptyMessage(0);
+                
             } catch (ClientProtocolException e) {
             } catch (IOException e) {
             }
@@ -378,7 +411,8 @@ public class MainActivity extends Activity implements Runnable, Handler.Callback
     		mTextViewStatus.setText("Connected to " + mSPP.getBluetoothAddress() + "\n" + 
     								"Small bumps detected: " + mSmallBump + "\n" + 
     								"Big bumps detected: " + mBigBump + "\n" + 
-    								"Distance since last checkpoint: " + tempDistTrvld);
+    								"Distance since last checkpoint: " + tempDistTrvld + "\n" + 
+    								"POST: " + responseText);
     	} else if (mIsThreadRunning) {
     		mTextViewStatus.setText("connecting to " + mBluetoothAddress);
     	} else {
