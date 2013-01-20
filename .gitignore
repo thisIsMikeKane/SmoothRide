@@ -5,6 +5,7 @@
 
 # Make Files
 */Output/*
+*/bin/*
 !*/Output/*.hex
 *.win
 *.lk
