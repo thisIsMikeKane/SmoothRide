@@ -54,6 +54,7 @@
         android:text="Connect" />
 
     <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button3"
@@ -89,17 +90,28 @@
     <TextView
         android:id="@+id/ID_STATUS"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView6"
         android:text="Waiting for sync" />
 
+    <!-- <TextView -->
+    <!-- android:id="@+id/returnsig" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="122dp" -->
+    <!-- android:layout_alignParentLeft="true" -->
+    <!-- android:layout_below="@+id/ID_STATUS" -->
+    <!-- android:text="TextView" /> -->
+
     <TextView
-        android:id="@+id/returnsig"
-        android:layout_width="match_parent"
-        android:layout_height="122dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/ID_STATUS"
-        android:text="TextView" />
+        android:id="@+id/tvtextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/button2"
+        android:layout_toRightOf="@+id/button2"
+        android:text="&quot;&quot;"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
