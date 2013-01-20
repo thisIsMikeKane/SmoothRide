@@ -1,26 +1,42 @@
+#include <SoftwareSerial.h>
 #include <AcceleroMMA7361.h>
 
 #include <math.h>
 
-//#define DEBUG
+int sleepPin = 2;
+int stPin = 5;
+int zeroGPin = 3;
+int gselPin = 4;
+int xPin = A0;
+int yPin = A1;
+int zPin = A2;
+
+int ledPin = 9;
+
+int rxPin = 6;
+int txPin = 7;
+SoftwareSerial BTSerial = SoftwareSerial(rxPin,txPin);
 
 void print(float x, float y, float z);
 void updateAccels();
 void onBump();
 float map2(float,float,float,float);
 
-AcceleroMMA7361 accelero;
+AcceleroMMA7361 accelero; //accelerometer
 float x;
 float y;
 float z;
 
-float threshold = .5;
+float threshold = .5; //default, but not needed
 
 void setup()
 {
   Serial.begin(9600);
-  pinMode(7,OUTPUT);
-  accelero.begin(2, 5, 3, 4, A0, A1, A2);
+  BTSerial.begin(9600);
+  pinMode(rxPin, INPUT);
+  pinMode(txPin, OUTPUT);
+  pinMode(ledPin,OUTPUT);
+  accelero.begin(sleepPin, stPin, zeroGPin, gselPin, xPin, yPin, zPin);
   accelero.setARefVoltage(3.3);
   accelero.setSensitivity(LOW);
   accelero.calibrate(); //make sure accel is flat before running
@@ -30,11 +46,11 @@ void setup()
 void loop()
 {
   updateAccels();
-  digitalWrite(7,LOW);
-  
-  #ifdef DEBUG
-  print(x,y,z);
-  #endif
+  if(BTSerial.available()){
+    BTSerial.println("Hey there!");
+    (void)BTSerial.read();
+  }   
+  print(x,y,z); //print the data to the console
   
   double sum = 0;
   for(int i=0;i<10;i++){
@@ -71,9 +87,10 @@ void updateAccels(){
 }
 
 void onBump(){
-  Serial.println("BUMP DETECTED");
-  digitalWrite(7,HIGH);
-  tone(9,500,100);
+  BTSerial.println("BUMP DETECTED"); //print to Bluetooth
+  digitalWrite(ledPin,HIGH);
+  delay(100);
+  digitalWrite(ledPin,LOW);
   //send packet via bluetooth
   //CODE goes here
 }
