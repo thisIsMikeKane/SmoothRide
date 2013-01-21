@@ -4,9 +4,7 @@ Smooth Ride
 ****************
 # PROJECT INFO
 
-**View the project [online][crowdmap]**
-
-	[id]: https://smoothride.crowdmap.com
+**View the project [online](https://smoothride.crowdmap.com)**
 
 This project containes an Android app, written in Java, and embedded C code meant 
 for an microcontroller. Together with the hardware described the user will
