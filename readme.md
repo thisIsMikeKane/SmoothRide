@@ -1,5 +1,6 @@
 Smooth Ride
 ===========
+![SmoothRide at night](https://raw.github.com/thisIsMikeKane/SmoothRide/master/Hardware/SplashScreen.jpg)
 
 ****************
 # PROJECT INFO
@@ -9,8 +10,6 @@ Smooth Ride
 This project containes an Android app, written in Java, and embedded C code meant 
 for an microcontroller. Together with the hardware described the user will
 automatically croud source a map of pot holes and easy bike routs in Philly
-
-![SmoothRide at night](https://raw.github.com/thisIsMikeKane/SmoothRide/master/Hardware/SplashScreen.jpg)
 
 *************************
 # Source Code Structure
